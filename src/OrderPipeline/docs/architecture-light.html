@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture at a glance</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Geist', system-ui, sans-serif; background: #f5f7fa; color: #0f172a;
+         min-height: 100vh; display: flex; align-items: center; justify-content: center;
+         padding: 3rem 2rem; }
+  .frame { max-width: 1200px; width: 100%; }
+  .eyebrow { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 0.66rem; font-weight: 500;
+              letter-spacing: 0.18em; text-transform: uppercase; color: #5b6878;
+              margin-bottom: 0.5rem; }
+  h1 { font-family: 'Instrument Serif', serif; font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+        font-weight: 400; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 1.5rem; }
+  svg { width: 100%; min-width: 900px; display: block; }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Architecture &middot; OrderPipeline</p>
+    <h1>Architecture at a glance</h1>
+    <svg viewBox="0 0 1000 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="architecture-light-title architecture-light-desc">
+      <title id="architecture-light-title">Architecture at a glance</title>
+      <desc id="architecture-light-desc">Container diagram of OrderPipeline: the Next.js web app calls the Ocelot gateway, which fronts the OrderPipeline, Inventory and Identity APIs, while Payment.Api is driven only by RabbitMQ events and Keycloak issues the tokens.</desc>
+      <defs>
+      <marker id="architecture-light-m-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#5b6878"/></marker>
+      <marker id="architecture-light-m-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f46e5"/></marker>
+      <marker id="architecture-light-m-ok" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#047857"/></marker>
+      <marker id="architecture-light-m-warn" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#b45309"/></marker>
+      <marker id="architecture-light-m-danger" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#be123c"/></marker>
+      </defs>
+      <rect width="100%" height="100%" fill="#f5f7fa"/>
+      <rect x="488" y="92" width="216" height="424" rx="8" fill="rgba(15,23,42,0.02)" stroke="rgba(15,23,42,0.10)" stroke-width="0.8"/>
+      <rect x="562" y="96" width="68" height="12" rx="2" fill="#f5f7fa"/>
+      <text x="596" y="105" fill="rgba(15,23,42,0.45)" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.14em">SERVICES</text>
+      <path d="M 200,260 H 272" fill="none" stroke="#4f46e5" stroke-width="1.2" marker-end="url(#architecture-light-m-accent)"/>
+      <path d="M 432,240 H 452 Q 460,240 460,232 V 164 Q 460,156 468,156 H 504" fill="none" stroke="#4f46e5" stroke-width="1.2" marker-end="url(#architecture-light-m-accent)"/>
+      <path d="M 432,260 H 504" fill="none" stroke="#4f46e5" stroke-width="1.2" marker-end="url(#architecture-light-m-accent)"/>
+      <path d="M 432,280 H 452 Q 460,280 460,288 V 460 Q 460,468 468,468 H 504" fill="none" stroke="#4f46e5" stroke-width="1.2" marker-end="url(#architecture-light-m-accent)"/>
+      <path d="M 688,156 H 716 Q 724,156 724,164 V 232 Q 724,240 732,240 H 768" fill="none" stroke="#5b6878" stroke-width="1.2" marker-end="url(#architecture-light-m-arrow)"/>
+      <path d="M 688,260 H 768" fill="none" stroke="#5b6878" stroke-width="1.2" marker-end="url(#architecture-light-m-arrow)"/>
+      <path d="M 688,364 H 716 Q 724,364 724,356 V 288 Q 724,280 732,280 H 768" fill="none" stroke="#5b6878" stroke-width="1.2" marker-end="url(#architecture-light-m-arrow)"/>
+      <path d="M 596,500 V 520 Q 596,528 588,528 H 408 Q 400,528 400,520 V 500" fill="none" stroke="#5b6878" stroke-width="1.2" marker-end="url(#architecture-light-m-arrow)"/>
+      <path d="M 120,300 V 452 Q 120,460 128,460 H 272" fill="none" stroke="#5b6878" stroke-width="1.2" marker-end="url(#architecture-light-m-arrow)"/>
+      <rect x="219.2" y="239" width="33.6" height="13" rx="2" fill="#f5f7fa"/>
+      <text x="236" y="248" fill="#4f46e5" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">HTTP</text>
+      <rect x="703.2" y="239" width="33.6" height="13" rx="2" fill="#f5f7fa"/>
+      <text x="720" y="248" fill="#5b6878" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">AMQP</text>
+      <rect x="165.7" y="441" width="60.6" height="13" rx="2" fill="#f5f7fa"/>
+      <text x="196" y="450" fill="#5b6878" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">OIDC PKCE</text>
+      <rect x="467.7" y="509" width="60.6" height="13" rx="2" fill="#f5f7fa"/>
+      <text x="498" y="518" fill="#5b6878" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">ADMIN API</text>
+      <rect x="40" y="220" width="160" height="80" rx="6" fill="#f5f7fa"/>
+      <rect x="40" y="220" width="160" height="80" rx="6" fill="#ffffff" stroke="#0f172a" stroke-width="1"/>
+      <rect x="48" y="226" width="20" height="12" rx="2" fill="none" stroke="#0f172a" stroke-opacity="0.40" stroke-width="0.8"/>
+      <text x="58.0" y="235" fill="#0f172a" fill-opacity="0.85" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">UI</text>
+      <text x="120.0" y="266.0" fill="#0f172a" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">web</text>
+      <text x="120.0" y="281.0" fill="#5b6878" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">Next.js 16 BFF</text>
+      <rect x="272" y="220" width="160" height="80" rx="6" fill="#f5f7fa"/>
+      <rect x="272" y="220" width="160" height="80" rx="6" fill="#eef0fe" stroke="#4f46e5" stroke-width="1"/>
+      <rect x="280" y="226" width="30" height="12" rx="2" fill="none" stroke="#4f46e5" stroke-opacity="0.40" stroke-width="0.8"/>
+      <text x="295.0" y="235" fill="#4f46e5" fill-opacity="0.85" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">EDGE</text>
+      <text x="352.0" y="266.0" fill="#0f172a" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Gateway.Api</text>
+      <text x="352.0" y="281.0" fill="#5b6878" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">Ocelot :8080</text>
+      <rect x="504" y="124" width="184" height="64" rx="6" fill="#f5f7fa"/>
+      <rect x="504" y="124" width="184" height="64" rx="6" fill="#ffffff" stroke="#0f172a" stroke-width="1"/>
+      <text x="596.0" y="154.0" fill="#0f172a" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">OrderPipeline.Api</text>
+      <text x="596.0" y="169.0" fill="#5b6878" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">:8085 · orderpipelinedb</text>
+      <rect x="504" y="228" width="184" height="64" rx="6" fill="#f5f7fa"/>
+      <rect x="504" y="228" width="184" height="64" rx="6" fill="#ffffff" stroke="#0f172a" stroke-width="1"/>
+      <text x="596.0" y="258.0" fill="#0f172a" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Inventory.Api</text>
+      <text x="596.0" y="273.0" fill="#5b6878" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">:8086 · inventorydb</text>
+      <rect x="504" y="332" width="184" height="64" rx="6" fill="#f5f7fa"/>
+      <rect x="504" y="332" width="184" height="64" rx="6" fill="#ffffff" stroke="#0f172a" stroke-width="1"/>
+      <text x="596.0" y="362.0" fill="#0f172a" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Payment.Api</text>
+      <text x="596.0" y="377.0" fill="#5b6878" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">events only · paymentdb</text>
+      <rect x="504" y="436" width="184" height="64" rx="6" fill="#f5f7fa"/>
+      <rect x="504" y="436" width="184" height="64" rx="6" fill="#ffffff" stroke="#0f172a" stroke-width="1"/>
+      <text x="596.0" y="466.0" fill="#0f172a" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Identity.Api</text>
+      <text x="596.0" y="481.0" fill="#5b6878" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">:8087 · no database</text>
+      <rect x="768" y="220" width="176" height="80" rx="6" fill="#f5f7fa"/>
+      <rect x="768" y="220" width="176" height="80" rx="6" fill="rgba(15,23,42,0.05)" stroke="#5b6878" stroke-width="1"/>
+      <rect x="776" y="226" width="25" height="12" rx="2" fill="none" stroke="#5b6878" stroke-opacity="0.40" stroke-width="0.8"/>
+      <text x="788.5" y="235" fill="#5b6878" fill-opacity="0.85" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">BUS</text>
+      <text x="856.0" y="266.0" fill="#0f172a" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">RabbitMQ</text>
+      <text x="856.0" y="281.0" fill="#5b6878" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">fanout exchanges</text>
+      <rect x="272" y="420" width="176" height="80" rx="6" fill="#f5f7fa"/>
+      <rect x="272" y="420" width="176" height="80" rx="6" fill="rgba(15,23,42,0.03)" stroke="#cbd2dc" stroke-width="1"/>
+      <rect x="280" y="426" width="25" height="12" rx="2" fill="none" stroke="#cbd2dc" stroke-opacity="0.40" stroke-width="0.8"/>
+      <text x="292.5" y="435" fill="#cbd2dc" fill-opacity="0.85" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">IDP</text>
+      <text x="360.0" y="466.0" fill="#0f172a" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Keycloak</text>
+      <text x="360.0" y="481.0" fill="#5b6878" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">realm orderpipeline</text>
+      <line x1="30" y1="572" x2="970" y2="572" stroke="rgba(15,23,42,0.12)" stroke-width="0.8"/>
+      <text x="30" y="589" fill="#5b6878" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.14em">LEGEND</text>
+      <rect x="110" y="577" width="16" height="12" rx="3" fill="#eef0fe" stroke="#4f46e5" stroke-width="1"/>
+      <text x="132" y="589" fill="#5b6878" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.04em">ENTRY POINT</text>
+      <rect x="215.4" y="577" width="16" height="12" rx="3" fill="#ffffff" stroke="#0f172a" stroke-width="1"/>
+      <text x="237.4" y="589" fill="#5b6878" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.04em">SERVICE</text>
+      <rect x="299.20000000000005" y="577" width="16" height="12" rx="3" fill="rgba(15,23,42,0.05)" stroke="#5b6878" stroke-width="1"/>
+      <text x="321.20000000000005" y="589" fill="#5b6878" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.04em">BROKER</text>
+      <rect x="377.6" y="577" width="16" height="12" rx="3" fill="rgba(15,23,42,0.03)" stroke="#cbd2dc" stroke-width="1"/>
+      <text x="399.6" y="589" fill="#5b6878" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.04em">EXTERNAL</text>
+    </svg>
+  </div>
+</body>
+</html>

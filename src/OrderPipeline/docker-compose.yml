@@ -1,0 +1,266 @@
+# Each connection string is used twice, by its own service and by the migrator.
+# Anchored here so the two can never drift apart.
+x-connection-strings:
+  orderpipelinedb: &db-orderpipeline ${ORDERPIPELINE_DB_CONNECTION_STRING:-Host=postgres;Port=5432;Database=orderpipelinedb;Username=app;Password=app}
+  inventorydb: &db-inventory ${INVENTORY_DB_CONNECTION_STRING:-Host=postgres;Port=5432;Database=inventorydb;Username=app;Password=app}
+  paymentdb: &db-payment ${PAYMENT_DB_CONNECTION_STRING:-Host=postgres;Port=5432;Database=paymentdb;Username=app;Password=app}
+
+services:
+  orderpipeline.api:
+    image: orderpipeline.api
+    build:
+      context: .
+      dockerfile: services/OrderPipeline.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__OrderPipelineDb: *db-orderpipeline
+      ConnectionStrings__RabbitMq: amqp://guest:guest@rabbitmq:5672/
+      InventoryApi__Url: http://inventory.api:8080
+      Keycloak__Authority: http://keycloak:8080/realms/orderpipeline
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+    ports:
+      - "8085:8080"
+    depends_on:
+      otel-collector:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+      inventory.api:
+        condition: service_started
+      keycloak:
+        condition: service_started
+
+  inventory.api:
+    image: inventory.api
+    build:
+      context: .
+      dockerfile: services/Inventory.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__InventoryDb: *db-inventory
+      ConnectionStrings__RabbitMq: amqp://guest:guest@rabbitmq:5672/
+      Keycloak__Authority: http://keycloak:8080/realms/orderpipeline
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+    ports:
+      - "8086:8080"
+    depends_on:
+      otel-collector:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+      keycloak:
+        condition: service_started
+
+  payment.api:
+    image: payment.api
+    build:
+      context: .
+      dockerfile: services/Payment.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__PaymentDb: *db-payment
+      ConnectionStrings__RabbitMq: amqp://guest:guest@rabbitmq:5672/
+      Payment__ProcessingDelayMs: "2500"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+    depends_on:
+      otel-collector:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+
+  identity.api:
+    image: identity.api
+    build:
+      context: .
+      dockerfile: services/Identity.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Keycloak__BaseUrl: http://keycloak:8080
+      Keycloak__ClientSecret: ${IDENTITY_CLIENT_SECRET:-identity-api-dev-secret}
+      Keycloak__Authority: http://keycloak:8080/realms/orderpipeline
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+    ports:
+      - "8087:8080"
+    depends_on:
+      - otel-collector
+      - keycloak
+
+  gateway.api:
+    image: gateway.api
+    build:
+      context: .
+      dockerfile: services/Gateway.Api/Dockerfile
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - otel-collector
+      - orderpipeline.api
+      - inventory.api
+      - identity.api
+
+  web:
+    image: web
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    environment:
+      AUTH_SECRET: ${WEB_AUTH_SECRET:-local-development-only-not-a-real-secret}
+      AUTH_TRUST_HOST: "true"
+      AUTH_URL: http://localhost:3000/api/auth
+      AUTH_KEYCLOAK_ID: orderpipeline-web
+      AUTH_KEYCLOAK_SECRET: ${WEB_KEYCLOAK_SECRET:-}
+      AUTH_KEYCLOAK_ISSUER: http://keycloak:8080/realms/orderpipeline
+      AUTH_KEYCLOAK_PUBLIC_ISSUER: http://localhost:8089/realms/orderpipeline
+      GATEWAY_URL: http://gateway.api:8080
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+      OTEL_COLLECTOR_HTTP_URL: http://otel-collector:4318
+    ports:
+      - "3000:3000"
+    depends_on:
+      - gateway.api
+      - keycloak
+      - otel-collector
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      # Only this one. inventorydb and paymentdb are created by `dotnet ef database
+      # update`, which works here because `app` is the superuser of this instance.
+      POSTGRES_DB: orderpipelinedb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d orderpipelinedb"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  migrator:
+    image: orderpipeline.migrator
+    build:
+      context: .
+      dockerfile: deploy/Migrator.Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__OrderPipelineDb: *db-orderpipeline
+      ConnectionStrings__InventoryDb: *db-inventory
+      ConnectionStrings__PaymentDb: *db-payment
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_port_connectivity"]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 20s
+
+  # Points every saga queue at the dead-letter exchange. A broker policy rather than a
+  # queue argument, because redeclaring a live queue with new arguments raises
+  # PRECONDITION_FAILED and closes the channel. See shared/Shared.Messaging/RabbitMqConsumer.cs.
+  rabbitmq-policy:
+    image: curlimages/curl:8.11.0
+    volumes:
+      - ./deploy/rabbitmq-policy.json:/policy.json:ro
+    entrypoint:
+      - sh
+      - -c
+      - >-
+        curl -sS -f -u guest:guest -X PUT
+        -H 'Content-Type: application/json'
+        --data @/policy.json
+        http://rabbitmq:15672/api/policies/%2F/orderpipeline-dead-letter
+        && echo 'dead-letter policy applied'
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.6
+    command: start-dev --import-realm
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      # Do not set KC_DB. `dev-mem` drops the realm once the pool goes idle, and the
+      # H2 file it falls back to makes --import-realm skip an edited realm. Both are
+      # written up in the README troubleshooting section.
+
+      # One issuer URL for browser and backend alike, otherwise the two see different
+      # `iss` values and Auth.js rejects the mismatch. BACKCHANNEL_DYNAMIC keeps
+      # service-to-service calls on the Docker-internal hostname.
+      KC_HOSTNAME: http://localhost:8089
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+    volumes:
+      - ./deploy/keycloak-realm.json:/opt/keycloak/data/import/realm.json
+    ports:
+      - "8089:8080"
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.88.0
+    volumes:
+      - ./deploy/otel-config.yaml:/etc/otel/config.yaml
+    command: --config /etc/otel/config.yaml
+    environment:
+      JAEGER_ENDPOINT: "jaeger:4317"
+      LOKI_ENDPOINT: "http://loki:3100/loki/api/v1/push"
+    ports:
+      - "8890:8889"   # Prometheus scrape endpoint
+      - "13134:13133" # health_check
+      - "55680:55679" # zPages
+      # Published so the web app can export telemetry when run with `npm run dev`.
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP
+    depends_on:
+      - jaeger
+      - loki
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.50.0
+    ports:
+      - "16687:16686"
+
+  prometheus:
+    image: prom/prometheus:v2.42.0
+    volumes:
+      - ./deploy/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9091:9090"
+
+  loki:
+    image: grafana/loki:2.7.4
+    ports:
+      - "3101:3100"
+
+  grafana:
+    image: grafana/grafana:9.4.3
+    volumes:
+      # Data sources only. Dashboards are built by hand in the UI, on purpose.
+      - ./deploy/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
+    ports:
+      - "3001:3000"
+
+volumes:
+  postgres-data:

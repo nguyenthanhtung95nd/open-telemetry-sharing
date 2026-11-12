@@ -1,0 +1,95 @@
+@host = http://localhost:5280
+
+### List bookmarks. Produces a three span trace: HTTP server, Bookmarks.List, postgresql.
+GET {{host}}/bookmarks
+
+### Create a bookmark. Ticks the bookmarks.created counter.
+# @name create
+POST {{host}}/bookmarks
+Content-Type: application/json
+
+{
+  "title": "Distributed tracing primer",
+  "url": "https://example.com/tracing",
+  "description": "Saved for later",
+  "kind": 1,
+  "status": 1,
+  "isArchived": false
+}
+
+### Read it back. Uses the id the create response returned.
+@bookmarkId = {{create.response.body.id}}
+GET {{host}}/bookmarks/{{bookmarkId}}
+
+### Create a tag.
+# @name createTag
+POST {{host}}/tags
+Content-Type: application/json
+
+{
+  "name": "observability",
+  "description": "OpenTelemetry things"
+}
+
+### Attach the tag. Replaces the whole set, so this is all or nothing.
+@tagId = {{createTag.response.body.id}}
+PUT {{host}}/bookmarks/{{bookmarkId}}/tags
+Content-Type: application/json
+
+{
+  "tagIds": ["{{tagId}}"]
+}
+
+### Replace the bookmark's fields.
+PUT {{host}}/bookmarks/{{bookmarkId}}
+Content-Type: application/json
+
+{
+  "title": "Distributed tracing, revised",
+  "url": "https://example.com/tracing",
+  "kind": 1,
+  "status": 2,
+  "isArchived": false
+}
+
+### Delete it.
+DELETE {{host}}/bookmarks/{{bookmarkId}}
+
+###
+### Failure paths. Each one is a deliberate behaviour, not an accident.
+###
+
+### 400, and the message names the field you asked for. The reference returned 500 here.
+GET {{host}}/bookmarks?sort=nonsense
+
+### 400. Page size is capped at 100 so one request cannot read the whole table.
+GET {{host}}/bookmarks?pageSize=1000
+
+### 400. Page is one-based.
+GET {{host}}/bookmarks?page=0
+
+### 404, through the result type rather than a null return.
+GET {{host}}/bookmarks/b_does_not_exist
+
+### 409. Tag names are unique ignoring case, so this collides with "observability".
+POST {{host}}/tags
+Content-Type: application/json
+
+{
+  "name": "Observability"
+}
+
+### 400, and the bookmark keeps the tags it already had. The upsert is all or nothing.
+PUT {{host}}/bookmarks/{{bookmarkId}}/tags
+Content-Type: application/json
+
+{
+  "tagIds": ["t_does_not_exist"]
+}
+
+### 406. The API serves JSON only.
+GET {{host}}/bookmarks
+Accept: application/xml
+
+### Filtering, sorting and paging together.
+GET {{host}}/bookmarks?q=tracing&kind=1&sort=title desc&page=1&pageSize=20

@@ -1,0 +1,56 @@
+<Project>
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!--
+    OpenTelemetry: pinned to the same versions OrderPipeline uses, so the vendored
+    Shared.Observability resolves exactly the dependencies it was built against.
+    Every package in this group must move together.
+  -->
+  <ItemGroup>
+    <PackageVersion Include="OpenTelemetry.Api" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.20.1" />
+  </ItemGroup>
+
+  <!-- Aspire: orchestration only. It owns no telemetry in this solution. -->
+  <ItemGroup>
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.6.4" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.6.4" />
+  </ItemGroup>
+
+  <!-- Data access. -->
+  <ItemGroup>
+    <PackageVersion Include="EFCore.NamingConventions" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.4" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+  </ItemGroup>
+
+  <!-- API surface. -->
+  <ItemGroup>
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.14" />
+  </ItemGroup>
+
+  <!-- Referenced by the vendored Shared.Observability. -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.14" />
+  </ItemGroup>
+
+  <!-- Test-only dependencies. -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.4" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+  </ItemGroup>
+
+</Project>

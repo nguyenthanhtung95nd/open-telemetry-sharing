@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Sdk Name="Aspire.AppHost.Sdk" Version="13.6.4" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>bookmarks-apphost</UserSecretsId>
+    <!-- ASPIRE010 advises installing the Aspire CLI bundle. Suppressed so `dotnet run` is the
+         only thing a reader needs: without the bundle the SDK pulls the dashboard and the
+         orchestrator in as NuGet packages, which is all this solution uses. -->
+    <NoWarn>$(NoWarn);ASPIRE010</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\services\Bookmarks.Api\Bookmarks.Api.csproj" />
+  </ItemGroup>
+
+</Project>

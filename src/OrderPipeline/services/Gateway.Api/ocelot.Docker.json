@@ -1,0 +1,171 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/orders",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "orderpipeline.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/orders",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ],
+      "SwaggerKey": "orderpipeline"
+    },
+    {
+      "DownstreamPathTemplate": "/api/orders/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "orderpipeline.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/orders/{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ],
+      "SwaggerKey": "orderpipeline"
+    },
+    {
+      "DownstreamPathTemplate": "/api/products",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "inventory.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/products",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ],
+      "SwaggerKey": "inventory"
+    },
+    {
+      "DownstreamPathTemplate": "/api/products/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "inventory.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/products/{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ],
+      "SwaggerKey": "inventory"
+    },
+    {
+      "DownstreamPathTemplate": "/inventory/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "inventory.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/inventory/{everything}",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "SwaggerKey": "inventory"
+    },
+    {
+      "DownstreamPathTemplate": "/identity/register",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "identity.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/identity/register",
+      "UpstreamHttpMethod": [
+        "Post"
+      ],
+      "SwaggerKey": "identity"
+    },
+    {
+      "DownstreamPathTemplate": "/identity/users",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "identity.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/identity/users",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ],
+      "SwaggerKey": "identity"
+    },
+    {
+      "DownstreamPathTemplate": "/identity/users/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "identity.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/identity/users/{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ],
+      "SwaggerKey": "identity"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "orderpipeline",
+      "Config": [
+        {
+          "Name": "OrderPipeline.Api",
+          "Version": "v1",
+          "Url": "http://orderpipeline.api:8080/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "inventory",
+      "Config": [
+        {
+          "Name": "Inventory.Api",
+          "Version": "v1",
+          "Url": "http://inventory.api:8080/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "identity",
+      "Config": [
+        {
+          "Name": "Identity.Api",
+          "Version": "v1",
+          "Url": "http://identity.api:8080/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://gateway.api:8080"
+  }
+}

@@ -1,0 +1,54 @@
+<Project>
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <!-- OpenTelemetry: every package in this group must move together. -->
+  <ItemGroup>
+    <PackageVersion Include="OpenTelemetry.Api" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.20.1" />
+    <PackageVersion Include="Npgsql.OpenTelemetry" Version="8.0.3" />
+  </ItemGroup>
+
+  <!-- Microsoft.Extensions and EF Core: tied to the net8.0 target. -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.11" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
+  </ItemGroup>
+
+  <!-- Third-party runtime dependencies. -->
+  <ItemGroup>
+    <PackageVersion Include="Destructurama.Attributed" Version="4.0.0" />
+    <PackageVersion Include="MMLib.SwaggerForOcelot" Version="8.3.2" />
+    <PackageVersion Include="Ocelot" Version="20.0.0" />
+    <!-- Retry around a message handler before it is dead-lettered. See ADR-0003. -->
+    <PackageVersion Include="Polly.Core" Version="8.9.0" />
+    <PackageVersion Include="RabbitMQ.Client" Version="6.8.1" />
+    <PackageVersion Include="Serilog.AspNetCore" Version="8.0.3" />
+    <PackageVersion Include="Serilog.Enrichers.Environment" Version="2.3.0" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <!-- Test-only dependencies. -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageVersion Include="NSubstitute" Version="5.1.0" />
+    <PackageVersion Include="Polly.Testing" Version="8.9.0" />
+    <PackageVersion Include="xunit" Version="2.9.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+</Project>

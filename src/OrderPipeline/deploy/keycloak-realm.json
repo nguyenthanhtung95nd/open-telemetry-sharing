@@ -1,0 +1,103 @@
+{
+  "realm": "orderpipeline",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "passwordPolicy": "length(8)",
+  "roles": {
+    "realm": [
+      {
+        "name": "customer",
+        "description": "Default role for registered customers"
+      },
+      {
+        "name": "admin",
+        "description": "Full access: product catalog and user administration"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "orderpipeline-web",
+      "name": "OrderPipeline Web (NextJS)",
+      "enabled": true,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://localhost:3000/*",
+        "http://web:3000/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000",
+        "http://web:3000"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "protocolMappers": [
+        {
+          "name": "realm roles (flat)",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "true",
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "access.token.claim": "true",
+            "id.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "identity-api",
+      "name": "Identity.Api (Admin API client)",
+      "enabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "secret": "identity-api-dev-secret",
+      "redirectUris": []
+    }
+  ],
+  "users": [
+    {
+      "username": "admin@orderpipeline.local",
+      "email": "admin@orderpipeline.local",
+      "firstName": "Platform",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin1234",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "customer",
+        "admin"
+      ]
+    },
+    {
+      "username": "service-account-identity-api",
+      "enabled": true,
+      "serviceAccountClientId": "identity-api",
+      "clientRoles": {
+        "realm-management": [
+          "realm-admin"
+        ]
+      }
+    }
+  ]
+}

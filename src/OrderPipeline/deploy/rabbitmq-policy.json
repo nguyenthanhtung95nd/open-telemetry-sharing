@@ -1,0 +1,8 @@
+{
+  "pattern": "^(orderpipeline|inventory|payment)\\.",
+  "apply-to": "queues",
+  "priority": 0,
+  "definition": {
+    "dead-letter-exchange": "orderpipeline.dead-letter"
+  }
+}

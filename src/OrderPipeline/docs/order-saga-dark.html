@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order saga</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Geist', system-ui, sans-serif; background: #0b0f16; color: #e8edf4;
+         min-height: 100vh; display: flex; align-items: center; justify-content: center;
+         padding: 3rem 2rem; }
+  .frame { max-width: 1200px; width: 100%; }
+  .eyebrow { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 0.66rem; font-weight: 500;
+              letter-spacing: 0.18em; text-transform: uppercase; color: #94a3b8;
+              margin-bottom: 0.5rem; }
+  h1 { font-family: 'Instrument Serif', serif; font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+        font-weight: 400; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 1.5rem; }
+  svg { width: 100%; min-width: 900px; display: block; }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Flowchart &middot; OrderPipeline</p>
+    <h1>Order saga</h1>
+    <svg viewBox="0 0 1000 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="order-saga-dark-title order-saga-dark-desc">
+      <title id="order-saga-dark-title">Order saga</title>
+      <desc id="order-saga-dark-desc">Flowchart of the OrderPipeline choreography saga: an order is saved as Pending, Inventory.Api reserves stock, Payment.Api charges, and a declined charge releases the reserved stock automatically.</desc>
+      <defs>
+      <marker id="order-saga-dark-m-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#94a3b8"/></marker>
+      <marker id="order-saga-dark-m-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#818cf8"/></marker>
+      <marker id="order-saga-dark-m-ok" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#34d399"/></marker>
+      <marker id="order-saga-dark-m-warn" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#fbbf24"/></marker>
+      <marker id="order-saga-dark-m-danger" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#fb7185"/></marker>
+      </defs>
+      <rect width="100%" height="100%" fill="#0b0f16"/>
+      <path d="M 500,80 V 128" fill="none" stroke="#94a3b8" stroke-width="1.2" marker-end="url(#order-saga-dark-m-arrow)"/>
+      <path d="M 500,184 V 232" fill="none" stroke="#94a3b8" stroke-width="1.2" marker-end="url(#order-saga-dark-m-arrow)"/>
+      <path d="M 500,288 V 318" fill="none" stroke="#94a3b8" stroke-width="1.2" marker-end="url(#order-saga-dark-m-arrow)"/>
+      <path d="M 500,394 V 442" fill="none" stroke="#94a3b8" stroke-width="1.2" marker-end="url(#order-saga-dark-m-arrow)"/>
+      <path d="M 500,498 V 528" fill="none" stroke="#94a3b8" stroke-width="1.2" marker-end="url(#order-saga-dark-m-arrow)"/>
+      <path d="M 500,604 V 652" fill="none" stroke="#34d399" stroke-width="1.2" marker-end="url(#order-saga-dark-m-ok)"/>
+      <path d="M 416,356 H 280" fill="none" stroke="#fbbf24" stroke-width="1.2" marker-end="url(#order-saga-dark-m-warn)"/>
+      <path d="M 584,566 H 720" fill="none" stroke="#fb7185" stroke-width="1.2" marker-end="url(#order-saga-dark-m-danger)"/>
+      <path d="M 830,538 V 268 Q 830,260 822,260 H 600" fill="none" stroke="#fb7185" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#order-saga-dark-m-danger)"/>
+      <rect x="529.6" y="203" width="76.80000000000001" height="13" rx="2" fill="#0b0f16"/>
+      <text x="568" y="212" fill="#94a3b8" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">ORDER.EVENTS</text>
+      <rect x="528.2" y="413" width="87.60000000000001" height="13" rx="2" fill="#0b0f16"/>
+      <text x="572" y="422" fill="#94a3b8" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">STOCK RESERVED</text>
+      <rect x="320.4" y="337" width="55.2" height="13" rx="2" fill="#0b0f16"/>
+      <text x="348" y="346" fill="#fbbf24" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">NO STOCK</text>
+      <rect x="624.4" y="547" width="55.2" height="13" rx="2" fill="#0b0f16"/>
+      <text x="652" y="556" fill="#fb7185" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">DECLINED</text>
+      <rect x="520.4" y="623" width="55.2" height="13" rx="2" fill="#0b0f16"/>
+      <text x="548" y="632" fill="#34d399" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">APPROVED</text>
+      <rect x="670.9" y="241" width="82.2" height="13" rx="2" fill="#0b0f16"/>
+      <text x="712" y="250" fill="#fb7185" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">RELEASE STOCK</text>
+      <rect x="420" y="40" width="160" height="40" rx="20.0" fill="#0b0f16"/>
+      <rect x="420" y="40" width="160" height="40" rx="20.0" fill="#141a23" stroke="#e8edf4" stroke-width="1"/>
+      <text x="500.0" y="64.0" fill="#e8edf4" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Customer places order</text>
+      <rect x="400" y="128" width="200" height="56" rx="6" fill="#0b0f16"/>
+      <rect x="400" y="128" width="200" height="56" rx="6" fill="#141a23" stroke="#e8edf4" stroke-width="1"/>
+      <rect x="408" y="134" width="30" height="12" rx="2" fill="none" stroke="#e8edf4" stroke-opacity="0.40" stroke-width="0.8"/>
+      <text x="423.0" y="143" fill="#e8edf4" fill-opacity="0.85" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">HTTP</text>
+      <text x="500.0" y="162.0" fill="#e8edf4" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">OrderPipeline.Api</text>
+      <text x="500.0" y="177.0" fill="#94a3b8" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">status: Pending</text>
+      <rect x="400" y="232" width="200" height="56" rx="6" fill="#0b0f16"/>
+      <rect x="400" y="232" width="200" height="56" rx="6" fill="#141a23" stroke="#e8edf4" stroke-width="1"/>
+      <rect x="408" y="238" width="35" height="12" rx="2" fill="none" stroke="#e8edf4" stroke-opacity="0.40" stroke-width="0.8"/>
+      <text x="425.5" y="247" fill="#e8edf4" fill-opacity="0.85" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">EVENT</text>
+      <text x="500.0" y="266.0" fill="#e8edf4" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Inventory.Api</text>
+      <text x="500.0" y="281.0" fill="#94a3b8" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">reserve stock</text>
+      <polygon points="500,318 584,356 500,394 416,356" fill="#0b0f16"/>
+      <polygon points="500,318 584,356 500,394 416,356" fill="#141a23" stroke="#e8edf4" stroke-width="1"/>
+      <text x="500" y="354" fill="#e8edf4" font-size="11" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Stock</text>
+      <text x="500" y="368" fill="#e8edf4" font-size="11" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">available?</text>
+      <rect x="400" y="442" width="200" height="56" rx="6" fill="#0b0f16"/>
+      <rect x="400" y="442" width="200" height="56" rx="6" fill="#141a23" stroke="#e8edf4" stroke-width="1"/>
+      <rect x="408" y="448" width="35" height="12" rx="2" fill="none" stroke="#e8edf4" stroke-opacity="0.40" stroke-width="0.8"/>
+      <text x="425.5" y="457" fill="#e8edf4" fill-opacity="0.85" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">EVENT</text>
+      <text x="500.0" y="476.0" fill="#e8edf4" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Payment.Api</text>
+      <text x="500.0" y="491.0" fill="#94a3b8" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">charge</text>
+      <polygon points="500,528 584,566 500,604 416,566" fill="#0b0f16"/>
+      <polygon points="500,528 584,566 500,604 416,566" fill="#141a23" stroke="#e8edf4" stroke-width="1"/>
+      <text x="500" y="564" fill="#e8edf4" font-size="11" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Charge</text>
+      <text x="500" y="578" fill="#e8edf4" font-size="11" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">approved?</text>
+      <rect x="420" y="652" width="160" height="40" rx="20.0" fill="#0b0f16"/>
+      <rect x="420" y="652" width="160" height="40" rx="20.0" fill="#0d2b24" stroke="#34d399" stroke-width="1"/>
+      <text x="500.0" y="676.0" fill="#e8edf4" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Paid</text>
+      <rect x="120" y="336" width="160" height="40" rx="20.0" fill="#0b0f16"/>
+      <rect x="120" y="336" width="160" height="40" rx="20.0" fill="#332513" stroke="#fbbf24" stroke-width="1"/>
+      <text x="200.0" y="360.0" fill="#e8edf4" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Out of stock</text>
+      <rect x="720" y="538" width="220" height="56" rx="6" fill="#0b0f16"/>
+      <rect x="720" y="538" width="220" height="56" rx="6" fill="#35161f" stroke="#fb7185" stroke-width="1"/>
+      <text x="830.0" y="564.0" fill="#e8edf4" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Payment failed</text>
+      <text x="830.0" y="579.0" fill="#94a3b8" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">stock released</text>
+      <line x1="30" y1="716" x2="970" y2="716" stroke="rgba(232,237,244,0.12)" stroke-width="0.8"/>
+      <text x="30" y="733" fill="#94a3b8" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.14em">LEGEND</text>
+      <rect x="110" y="721" width="16" height="12" rx="6" fill="#141a23" stroke="#e8edf4" stroke-width="1"/>
+      <text x="132" y="733" fill="#94a3b8" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.04em">START / END</text>
+      <rect x="215.4" y="721" width="16" height="12" rx="3" fill="#141a23" stroke="#e8edf4" stroke-width="1"/>
+      <text x="237.4" y="733" fill="#94a3b8" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.04em">SERVICE</text>
+      <polygon points="307.20000000000005,720 315.20000000000005,727 307.20000000000005,734 299.20000000000005,727" fill="#141a23" stroke="#e8edf4" stroke-width="1"/>
+      <text x="321.20000000000005" y="733" fill="#94a3b8" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.04em">DECISION</text>
+      <line x1="388.40000000000003" y1="727" x2="404.40000000000003" y2="727" stroke="#fb7185" stroke-width="1.2" stroke-dasharray="4,3"/>
+      <text x="410.40000000000003" y="733" fill="#94a3b8" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.04em">COMPENSATION</text>
+    </svg>
+  </div>
+</body>
+</html>

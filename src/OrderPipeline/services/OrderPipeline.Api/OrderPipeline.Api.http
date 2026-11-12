@@ -1,0 +1,6 @@
+@OrderPipeline.Api_HostAddress = http://localhost:5285
+
+GET {{OrderPipeline.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

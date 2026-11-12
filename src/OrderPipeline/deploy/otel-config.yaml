@@ -1,0 +1,65 @@
+extensions:
+  health_check:
+  zpages:
+    endpoint: :55679
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 50
+    spike_limit_percentage: 30
+
+  batch:
+
+  attributes:
+    actions:
+      - key: deployment.environment
+        value: local
+        action: insert
+
+  tail_sampling:
+    decision_wait: 10s
+    policies:
+      - name: keep-errors
+        type: status_code
+        status_code:
+          status_codes: [ERROR]
+      - name: sample-the-rest
+        type: probabilistic
+        probabilistic:
+          sampling_percentage: 50
+
+exporters:
+  debug:
+  otlp:
+    endpoint: "${JAEGER_ENDPOINT}"
+    tls:
+      insecure: true
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+  loki:
+    endpoint: "${LOKI_ENDPOINT}"
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, attributes, tail_sampling, batch]
+      exporters: [debug, otlp]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [debug, prometheus]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug, loki]
+  extensions: [health_check, zpages]

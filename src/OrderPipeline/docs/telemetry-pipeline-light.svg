@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1000 476" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="telemetry-pipeline-light-title telemetry-pipeline-light-desc">
+      <title id="telemetry-pipeline-light-title">Telemetry pipeline</title>
+      <desc id="telemetry-pipeline-light-desc">The web app and the five .NET services export traces, metrics and logs over OTLP to one OpenTelemetry Collector, which fans them out to Jaeger, Prometheus and Loki.</desc>
+      <defs><style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap');</style></defs>
+      <defs>
+      <marker id="telemetry-pipeline-light-m-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#5b6878"/></marker>
+      <marker id="telemetry-pipeline-light-m-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f46e5"/></marker>
+      <marker id="telemetry-pipeline-light-m-ok" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#047857"/></marker>
+      <marker id="telemetry-pipeline-light-m-warn" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#b45309"/></marker>
+      <marker id="telemetry-pipeline-light-m-danger" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#be123c"/></marker>
+      </defs>
+      <rect width="100%" height="100%" fill="#f5f7fa"/>
+      <path d="M 216,140 H 320 Q 328,140 328,148 V 185 Q 328,193 336,193 H 360" fill="none" stroke="#4f46e5" stroke-width="1.2" marker-end="url(#telemetry-pipeline-light-m-accent)"/>
+      <path d="M 216,280 H 320 Q 328,280 328,272 V 235 Q 328,227 336,227 H 360" fill="none" stroke="#4f46e5" stroke-width="1.2" marker-end="url(#telemetry-pipeline-light-m-accent)"/>
+      <path d="M 560,180 H 588 Q 596,180 596,172 V 100 Q 596,92 604,92 H 700" fill="none" stroke="#5b6878" stroke-width="1.2" marker-end="url(#telemetry-pipeline-light-m-arrow)"/>
+      <path d="M 560,200 H 608 Q 616,200 616,192 V 188 Q 616,180 624,180 H 700" fill="none" stroke="#5b6878" stroke-width="1.2" marker-end="url(#telemetry-pipeline-light-m-arrow)"/>
+      <path d="M 560,220 H 628 Q 636,220 636,228 V 260 Q 636,268 644,268 H 700" fill="none" stroke="#5b6878" stroke-width="1.2" marker-end="url(#telemetry-pipeline-light-m-arrow)"/>
+      <rect x="237.7" y="121" width="60.6" height="13" rx="2" fill="#f5f7fa"/>
+      <text x="268" y="130" fill="#4f46e5" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">OTLP 4318</text>
+      <rect x="237.7" y="261" width="60.6" height="13" rx="2" fill="#f5f7fa"/>
+      <text x="268" y="270" fill="#4f46e5" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">OTLP 4317</text>
+      <rect x="629.8" y="73" width="44.400000000000006" height="13" rx="2" fill="#f5f7fa"/>
+      <text x="652" y="82" fill="#5b6878" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">TRACES</text>
+      <rect x="637.1" y="161" width="49.800000000000004" height="13" rx="2" fill="#f5f7fa"/>
+      <text x="662" y="170" fill="#5b6878" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">METRICS</text>
+      <rect x="655.2" y="249" width="33.6" height="13" rx="2" fill="#f5f7fa"/>
+      <text x="672" y="258" fill="#5b6878" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">LOGS</text>
+      <rect x="40" y="100" width="176" height="80" rx="6" fill="#f5f7fa"/>
+      <rect x="40" y="100" width="176" height="80" rx="6" fill="#ffffff" stroke="#0f172a" stroke-width="1"/>
+      <rect x="48" y="106" width="25" height="12" rx="2" fill="none" stroke="#0f172a" stroke-opacity="0.40" stroke-width="0.8"/>
+      <text x="60.5" y="115" fill="#0f172a" fill-opacity="0.85" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">APP</text>
+      <text x="128.0" y="146.0" fill="#0f172a" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">web</text>
+      <text x="128.0" y="161.0" fill="#5b6878" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">browser + BFF</text>
+      <rect x="40" y="240" width="176" height="80" rx="6" fill="#f5f7fa"/>
+      <rect x="40" y="240" width="176" height="80" rx="6" fill="#ffffff" stroke="#0f172a" stroke-width="1"/>
+      <rect x="48" y="246" width="25" height="12" rx="2" fill="none" stroke="#0f172a" stroke-opacity="0.40" stroke-width="0.8"/>
+      <text x="60.5" y="255" fill="#0f172a" fill-opacity="0.85" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">APP</text>
+      <text x="128.0" y="286.0" fill="#0f172a" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Five .NET services</text>
+      <text x="128.0" y="301.0" fill="#5b6878" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">gateway + 4 APIs</text>
+      <rect x="360" y="160" width="200" height="100" rx="6" fill="#f5f7fa"/>
+      <rect x="360" y="160" width="200" height="100" rx="6" fill="#eef0fe" stroke="#4f46e5" stroke-width="1"/>
+      <rect x="368" y="166" width="30" height="12" rx="2" fill="none" stroke="#4f46e5" stroke-opacity="0.40" stroke-width="0.8"/>
+      <text x="383.0" y="175" fill="#4f46e5" fill-opacity="0.85" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">PIPE</text>
+      <text x="460.0" y="216.0" fill="#0f172a" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">OTel Collector</text>
+      <text x="460.0" y="231.0" fill="#5b6878" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">tail sampling 50%</text>
+      <rect x="700" y="60" width="200" height="64" rx="6" fill="#f5f7fa"/>
+      <rect x="700" y="60" width="200" height="64" rx="6" fill="#0f172a" fill-opacity="0.05" stroke="#5b6878" stroke-width="1"/>
+      <text x="800.0" y="90.0" fill="#0f172a" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Jaeger</text>
+      <text x="800.0" y="105.0" fill="#5b6878" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">:16687</text>
+      <rect x="700" y="148" width="200" height="64" rx="6" fill="#f5f7fa"/>
+      <rect x="700" y="148" width="200" height="64" rx="6" fill="#0f172a" fill-opacity="0.05" stroke="#5b6878" stroke-width="1"/>
+      <text x="800.0" y="178.0" fill="#0f172a" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Prometheus</text>
+      <text x="800.0" y="193.0" fill="#5b6878" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">:9091</text>
+      <rect x="700" y="236" width="200" height="64" rx="6" fill="#f5f7fa"/>
+      <rect x="700" y="236" width="200" height="64" rx="6" fill="#0f172a" fill-opacity="0.05" stroke="#5b6878" stroke-width="1"/>
+      <text x="800.0" y="266.0" fill="#0f172a" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Loki</text>
+      <text x="800.0" y="281.0" fill="#5b6878" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">via Grafana :3001</text>
+      <line x1="30" y1="388" x2="970" y2="388" stroke="#0f172a" stroke-opacity="0.12" stroke-width="0.8"/>
+      <text x="30" y="405" fill="#5b6878" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.14em">LEGEND</text>
+      <rect x="110" y="393" width="16" height="12" rx="3" fill="#eef0fe" stroke="#4f46e5" stroke-width="1"/>
+      <text x="132" y="405" fill="#5b6878" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.04em">COLLECTOR</text>
+      <rect x="204.6" y="393" width="16" height="12" rx="3" fill="#ffffff" stroke="#0f172a" stroke-width="1"/>
+      <text x="226.6" y="405" fill="#5b6878" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.04em">EMITTER</text>
+      <rect x="288.4" y="393" width="16" height="12" rx="3" fill="#0f172a" fill-opacity="0.05" stroke="#5b6878" stroke-width="1"/>
+      <text x="310.4" y="405" fill="#5b6878" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.04em">BACKEND</text>
+    </svg>
